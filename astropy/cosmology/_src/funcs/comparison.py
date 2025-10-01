@@ -197,8 +197,9 @@ def _comparison_decorator(pyfunc: Callable[..., Any]) -> Callable[..., Any]:
         # Parse cosmologies to format. Only do specified number.
         cosmos = _parse_formats(*cosmos, format=format)
         # Evaluate pyfunc, erroring if didn't match specified number.
+        result = wrapper.__wrapped__(*cosmos, **kwargs)
         # Return, casting to correct type casting is possible.
-        return wrapper.__wrapped__(*cosmos, **kwargs)
+        return result
 
     return wrapper
 
@@ -365,6 +366,8 @@ def _cosmology_not_equal(
     astropy.cosmology.cosmology_equal
         Element-wise equality check, with argument conversion to Cosmology.
     """
+    neq = not cosmology_equal(cosmo1, cosmo2, allow_equivalent=allow_equivalent)
     # TODO! it might eventually be worth the speed boost to implement some of
     #       the internals of cosmology_equal here, but for now it's a hassle.
-    return not cosmology_equal(cosmo1, cosmo2, allow_equivalent=allow_equivalent)
+
+    return neq

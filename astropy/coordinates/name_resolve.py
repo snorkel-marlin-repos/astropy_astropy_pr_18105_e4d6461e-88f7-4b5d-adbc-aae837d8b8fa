@@ -212,4 +212,5 @@ def get_icrs_coordinates(name, parse=False, cache=False):
         raise NameResolveError(err)
 
     # Return SkyCoord object
-    return SkyCoord(ra=ra, dec=dec, unit=(u.degree, u.degree), frame="icrs")
+    sc = SkyCoord(ra=ra, dec=dec, unit=(u.degree, u.degree), frame="icrs")
+    return sc

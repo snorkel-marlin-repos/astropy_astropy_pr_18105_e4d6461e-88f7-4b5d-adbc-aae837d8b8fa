@@ -1676,9 +1676,10 @@ def test_subclass_representation():
 
     class Longitude180(Longitude):
         def __new__(cls, angle, unit=None, wrap_angle=180 * u.deg, **kwargs):
-            return super().__new__(
+            self = super().__new__(
                 cls, angle, unit=unit, wrap_angle=wrap_angle, **kwargs
             )
+            return self
 
     class SphericalWrap180Representation(SphericalRepresentation):
         attr_classes = {"lon": Longitude180, "lat": Latitude, "distance": u.Quantity}

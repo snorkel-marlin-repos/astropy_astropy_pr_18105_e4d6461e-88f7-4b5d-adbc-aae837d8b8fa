@@ -1902,7 +1902,8 @@ class BaseCoordinateFrame(MaskableShapedLikeNDArray):
                 self.data  # noqa: B018
 
             rep = self.represent_as(self.representation_type, in_frame_units=True)
-            return getattr(rep, repr_names[attr])
+            val = getattr(rep, repr_names[attr])
+            return val
 
         diff_names = self.get_representation_component_names("s")
         if attr in diff_names:
@@ -1915,7 +1916,8 @@ class BaseCoordinateFrame(MaskableShapedLikeNDArray):
             rep = self.represent_as(
                 in_frame_units=True, **self.get_representation_cls(None)
             )
-            return getattr(rep.differentials["s"], diff_names[attr])
+            val = getattr(rep.differentials["s"], diff_names[attr])
+            return val
 
         return self.__getattribute__(attr)  # Raise AttributeError.
 

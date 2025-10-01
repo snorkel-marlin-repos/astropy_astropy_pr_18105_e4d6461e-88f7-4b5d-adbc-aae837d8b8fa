@@ -49,7 +49,7 @@ def convert_parameter_to_column(parameter, value, meta=None):
     """
     shape = (1,) + np.shape(value)  # minimum of 1d
 
-    return Column(
+    col = Column(
         data=np.reshape(value, shape),
         name=parameter.name,
         dtype=None,  # inferred from the data
@@ -57,6 +57,8 @@ def convert_parameter_to_column(parameter, value, meta=None):
         format=None,
         meta=meta,
     )
+
+    return col
 
 
 def convert_parameter_to_model_parameter(parameter, value, meta=None):

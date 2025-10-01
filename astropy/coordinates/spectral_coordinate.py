@@ -564,7 +564,9 @@ class SpectralCoord(SpectralQuantity):
         # Reset any that are 0 to 1 to avoid nans from 0/0
         dp_norm[dp_norm == 0] = 1 * dp_norm.unit
 
-        return d_pos / dp_norm
+        pos_hat = d_pos / dp_norm
+
+        return pos_hat
 
     @u.quantity_input(velocity=u.km / u.s)
     def with_observer_stationary_relative_to(
@@ -666,7 +668,9 @@ class SpectralCoord(SpectralQuantity):
         # Apply transformation to data
         new_data = _apply_relativistic_doppler_shift(self, fin_obs_vel - init_obs_vel)
 
-        return self.replicate(value=new_data, observer=observer)
+        new_coord = self.replicate(value=new_data, observer=observer)
+
+        return new_coord
 
     def with_radial_velocity_shift(self, target_shift=None, observer_shift=None):
         """

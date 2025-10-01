@@ -97,13 +97,14 @@ class _CosmologyModel(FittableModel, Generic[_CosmoT]):
     @property
     def cosmology(self) -> _CosmoT:
         """Return |Cosmology| using `~astropy.modeling.Parameter` values."""
-        return self._cosmology_class(
+        cosmo = self._cosmology_class(
             name=self.name,
             **{
                 k: (v.value if not (v := getattr(self, k)).unit else v.quantity)
                 for k in self.param_names
             },
         )
+        return cosmo
 
     @classproperty
     def method_name(self) -> str:
@@ -160,7 +161,9 @@ class _CosmologyModel(FittableModel, Generic[_CosmoT]):
         # make instance of cosmology
         cosmo = self._cosmology_class(**ba.arguments)
         # evaluate method
-        return getattr(cosmo, self._method_name)(*args[: self.n_inputs])
+        result = getattr(cosmo, self._method_name)(*args[: self.n_inputs])
+
+        return result
 
 
 ##############################################################################
@@ -272,9 +275,11 @@ def to_model(cosmology: _CosmoT, *_: object, method: str) -> _CosmologyModel[_Co
         )
 
     # instantiate class using default values
-    return CosmoModel(
+    model = CosmoModel(
         **cosmology.parameters, name=cosmology.name, meta=copy.deepcopy(cosmology.meta)
     )
+
+    return model
 
 
 def model_identify(
