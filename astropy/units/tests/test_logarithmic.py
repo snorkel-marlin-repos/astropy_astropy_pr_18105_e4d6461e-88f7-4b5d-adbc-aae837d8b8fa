@@ -3,6 +3,7 @@
 Test the Logarithmic Units and Quantities
 """
 
+import itertools
 import pickle
 
 import numpy as np
@@ -42,8 +43,9 @@ class TestLogUnitCreation:
         assert lu == lu._default_function_unit  # eg, MagUnit() == u.mag
         assert lu._default_function_unit == lu  # and u.mag == MagUnit()
 
-    @pytest.mark.parametrize("physical_unit", pu_sample)
-    @pytest.mark.parametrize("lu_unit", lu_units)
+    @pytest.mark.parametrize(
+        "lu_unit, physical_unit", itertools.product(lu_units, pu_sample)
+    )
     def test_call_units(self, lu_unit, physical_unit):
         """Create a LogUnit subclass using the callable unit and physical unit,
         and do basic check that output is right."""
@@ -57,8 +59,10 @@ class TestLogUnitCreation:
         with pytest.raises(ValueError):
             u.mag(u.mag())
 
-    @pytest.mark.parametrize("physical_unit", pu_sample)
-    @pytest.mark.parametrize("lu_cls", lu_subclasses + [u.LogUnit])
+    @pytest.mark.parametrize(
+        "lu_cls, physical_unit",
+        itertools.product(lu_subclasses + [u.LogUnit], pu_sample),
+    )
     def test_subclass_creation(self, lu_cls, physical_unit):
         """Create a LogUnit subclass object for given physical unit,
         and do basic check that output is right."""
@@ -210,8 +214,9 @@ class TestLogUnitStrings:
 
 
 class TestLogUnitConversion:
-    @pytest.mark.parametrize("physical_unit", pu_sample)
-    @pytest.mark.parametrize("lu_unit", lu_units)
+    @pytest.mark.parametrize(
+        "lu_unit, physical_unit", itertools.product(lu_units, pu_sample)
+    )
     def test_physical_unit_conversion(self, lu_unit, physical_unit):
         """Check various LogUnit subclasses are equivalent and convertible
         to their non-log counterparts."""
@@ -256,9 +261,10 @@ class TestLogUnitConversion:
         with pytest.raises(u.UnitsError):
             lu2.to(lu2.function_unit, values)
 
-    @pytest.mark.parametrize("physical_unit", pu_sample)
-    @pytest.mark.parametrize("tlu_unit", lu_units)
-    @pytest.mark.parametrize("flu_unit", lu_units)
+    @pytest.mark.parametrize(
+        "flu_unit, tlu_unit, physical_unit",
+        itertools.product(lu_units, lu_units, pu_sample),
+    )
     def test_subclass_conversion(self, flu_unit, tlu_unit, physical_unit):
         """Check various LogUnit subclasses are equivalent and convertible
         to each other if they correspond to equivalent physical units."""
@@ -505,8 +511,9 @@ class TestLogQuantityCreation:
         assert lq._unit_class == lu
         assert type(lu()._quantity_class(1.0)) is lq
 
-    @pytest.mark.parametrize("physical_unit", pu_sample)
-    @pytest.mark.parametrize("lq_cls", lq_subclasses)
+    @pytest.mark.parametrize(
+        "lq_cls, physical_unit", itertools.product(lq_subclasses, pu_sample)
+    )
     def test_subclass_creation(self, lq_cls, physical_unit):
         """Create LogQuantity subclass objects for some physical units,
         and basic check on transformations"""
